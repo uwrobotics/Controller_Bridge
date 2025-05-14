@@ -28,4 +28,24 @@ In short term, this project is aimed to support ODrive family. In long term, thi
 
 Anyone using this library still need to integrate application/ simulation on top of this static library.
 
+
+
+# Interface
+
+## Set Command
+
+```c++
+enum class MvCmd {
+    Vel,
+    Pos
+};
+
+typedef struct {
+  	MvCmd type;
+    VecComp val[2];
+};
+```
+
+
+
 # Acknowledgements
