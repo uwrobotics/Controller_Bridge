@@ -32,7 +32,7 @@ Anyone using this library still need to integrate application/ simulation on top
 
 # Interface
 
-## Set Command
+## Movement Command
 
 ```c++
 enum class MvCmd {
@@ -40,10 +40,49 @@ enum class MvCmd {
     Pos
 };
 
-typedef struct {
-  	MvCmd type;
-    VecComp val[2];
-};
+class MvCmd {
+    MvCmd mode;
+    uint16_t id;
+   	float32 value[2]; //X, Y component for vel or pos
+}
+```
+
+Note: Vel_FF, Torque_FF is preconfigured variable.
+
+## Get Command
+
+```cpp
+class InsOut {
+    float fet_temp;
+    float bus_volt;
+    float bus_curr;
+    float pos_est;
+    float vel_est;
+    float torque_est;
+}
+
+class Logging {
+    float fet_temp;
+    float bus_volt;
+    float bus_curr;
+    float pos_est;
+    float vel_est;
+    float torque_est;
+    float motor_temp;
+    float phase_current_setpoint;
+    float phase_current_measured;
+    float torque_tar;
+    float elec_power;
+    float mech_power;
+}
+```
+
+
+
+## Set Command
+
+```c++
+//todo
 ```
 
 
