@@ -5,13 +5,17 @@
  * TODO:
  * - support unit testing
  * - compile using cmake
+ * - Support Error handling
  * - support odrive config
  * reference: https://github.com/odriverobotics/ODriveResources/blob/master/examples/can_restore_config.py
  */
 
-constexpr uint8_t broadcast_node_id = 0x3f;
-constexpr bool auto_buad = false; //support send beacon message
+constexpr uint8_t broadcastNodeId = 0x3f;
+constexpr bool autoBuad = false; //support send beacon message
 
+constexpr uint16_t errCode = static_cast<uint16_t>(-1);
+
+/// @brief support if not defined command then use undefined
 enum class cmd_map : uint8_t {
     Get_Version                = 0x000,
     Heartbeat                 = 0x001,
@@ -40,11 +44,24 @@ enum class cmd_map : uint8_t {
     Set_Vel_Gains             = 0x01b,
     Get_Torques               = 0x01c,
     Get_Powers                = 0x01d,
-    Enter_DFU_Mode            = 0x01f
+    Enter_DFU_Mode            = 0x01f,
+    UNDEFINE                  = 0x0FF,
 };
 
 
-inline uint16_t arbitration_id(uint8_t node_id, cmd_map cmd) {
+inline uint16_t set_arbitration_id(uint8_t node_id, cmd_map cmd) {
+    // Boundary Check
+    if(node_id > broadcastNodeId) {
+        return errCode;
+    }
+    return (static_cast<uint16_t>(node_id) << 5) | static_cast<uint8_t>(cmd);
+}
+
+inline uint16_t get_arbitration_id(uint8_t node_id, cmd_map cmd) {
+    // Boundary Check
+    if(node_id > broadcastNodeId) {
+        return errCode;
+    }
     return (static_cast<uint16_t>(node_id) << 5) | static_cast<uint8_t>(cmd);
 }
 
