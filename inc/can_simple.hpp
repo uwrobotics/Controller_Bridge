@@ -228,6 +228,8 @@ namespace CanPayload {
     };
     #pragma pack(pop)
 
+    
+
     // Compile-time check that all CAN payloads are == 8 bytes
     static_assert(sizeof(GetVersionPayload) == 8, "GetVersionPayload too large");
     static_assert(sizeof(HeartbeatPayload) == 8, "HeartbeatPayload too large");
@@ -241,7 +243,6 @@ namespace CanPayload {
     static_assert(sizeof(BusVoltageCurrentPayload) == 8, "BusVoltageCurrentPayload too large");
     static_assert(sizeof(GetTorquesPayload) == 8, "GetTorquesPayload too large");
     static_assert(sizeof(GetPowersPayload) == 8, "GetPowersPayload too large");
-
     static_assert(sizeof(SetAxisStatePayload) == 8, "SetAxisStatePayload too large");
     static_assert(sizeof(SetControllerModePayload) == 8, "SetControllerModePayload too large");
     static_assert(sizeof(SetInputPosPayload) == 8, "SetInputPosPayload too large");
