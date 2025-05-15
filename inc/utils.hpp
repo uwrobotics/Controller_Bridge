@@ -1,5 +1,7 @@
 #pragma once
 #include <stdint.h>
+#include <array>
+#include <algorithm>
 
 /**
  * TODO:
@@ -8,6 +10,12 @@
  * - support odrive config
  * reference: https://github.com/odriverobotics/ODriveResources/blob/master/examples/can_restore_config.py
  */
+
+template <typename Enum, size_t N>
+bool IsDefined(uint8_t value, const std::array<Enum, N>& allowed) {
+    Enum candidate = static_cast<Enum>(value);
+    return std::find(allowed.begin(), allowed.end(), candidate) != allowed.end();
+}
 
 namespace CanHeader {
     constexpr uint8_t broadcastNodeId = 0x3f;
@@ -18,7 +26,7 @@ namespace CanHeader {
     constexpr uint16_t errCode16 = static_cast<uint16_t>(-1);
 
     /// @todo: Support cmd decode and if not in enum assign UNDEFINE
-    enum class cmd_map : uint8_t {
+    enum class CmdMap : uint8_t {
         Get_Version                = 0x000,
         Heartbeat                 = 0x001,
         Estop                     = 0x002,
@@ -46,15 +54,45 @@ namespace CanHeader {
         Set_Vel_Gains             = 0x01b,
         Get_Torques               = 0x01c,
         Get_Powers                = 0x01d,
-        Enter_DFU_Mode            = 0x01f,
-        UNDEFINED                 = 0x0FF,
+        Enter_DFU_Mode            = 0x01f
+    };
+
+    constexpr std::array<CmdMap, 28> valid_cmds = {
+        CmdMap::Get_Version,
+        CmdMap::Heartbeat,
+        CmdMap::Estop,
+        CmdMap::Get_Error,
+        CmdMap::RxSdo,
+        CmdMap::TxSdo,
+        CmdMap::Address,
+        CmdMap::Set_Axis_State,
+        CmdMap::Get_Encoder_Estimates,
+        CmdMap::Set_Controller_Mode,
+        CmdMap::Set_Input_Pos,
+        CmdMap::Set_Input_Vel,
+        CmdMap::Set_Input_Torque,
+        CmdMap::Set_Limits,
+        CmdMap::Set_Traj_Vel_Limit,
+        CmdMap::Set_Traj_Accel_Limits,
+        CmdMap::Set_Traj_Inertia,
+        CmdMap::Get_Iq,
+        CmdMap::Get_Temperature,
+        CmdMap::Reboot,
+        CmdMap::Get_Bus_Voltage_Current,
+        CmdMap::Clear_Errors,
+        CmdMap::Set_Absolute_Position,
+        CmdMap::Set_Pos_Gain,
+        CmdMap::Set_Vel_Gains,
+        CmdMap::Get_Torques,
+        CmdMap::Get_Powers,
+        CmdMap::Enter_DFU_Mode
     };
 
     struct HeaderInfo{
         uint8_t id;
-        cmd_map cmd;
+        CmdMap cmd;
 
-        HeaderInfo(uint8_t id_val, cmd_map cmd_val)
+        HeaderInfo(uint8_t id_val, CmdMap cmd_val)
             : id(id_val), cmd(cmd_val) {}
     };
 
@@ -70,13 +108,17 @@ namespace CanHeader {
     inline HeaderInfo decode(uint16_t buf) {
         // Boundary Check
         if(buf > headerBound) {
-            return HeaderInfo(errorCode8, static_cast<cmd_map>(errorCode8));
+            return HeaderInfo(errorCode8, static_cast<CmdMap>(errorCode8));
         }
-        return HeaderInfo(buf>>5 & broadcastNodeId, static_cast<cmd_map>(buf & cmdBound));
+        return HeaderInfo(buf>>5 & broadcastNodeId, static_cast<CmdMap>(buf & cmdBound));
     }
 
     inline bool operator==(const HeaderInfo& lhs, const HeaderInfo& rhs) {
         return lhs.id == rhs.id && lhs.cmd == rhs.cmd;
+    }
+
+    inline bool is_defined(uint8_t cmd) {
+        return IsDefined<CmdMap>(cmd, valid_cmds);
     }
 }
 
