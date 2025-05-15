@@ -54,3 +54,8 @@ namespace CanHeader {
     }
 }
 
+namespace CanPayload {
+    inline uint64_t align_int48_t(uint32_t upper, uint16_t lower) {
+        return static_cast<uint64_t> (upper << 16) & lower;
+    }
+}
