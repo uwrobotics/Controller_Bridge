@@ -85,6 +85,17 @@ class Logging {
 //todo
 ```
 
+# Testing and Validation
 
+```bash
+# Create build folder based on CMakeLists.txt
+cmake -S . -b build
+
+# Compile the project
+cmake --build build
+
+# Execute test
+cd build && ctest && cd ..
+```
 
 # Acknowledgements
