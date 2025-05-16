@@ -3,13 +3,14 @@
 
 namespace CanHeader {
     constexpr uint8_t broadcastNodeId = 0x3f;
-    constexpr bool autoBuad = false; //support send beacon message
     constexpr uint16_t headerBound = 0x7ff;
     constexpr uint8_t cmdBound = 0x1f;
     constexpr uint8_t errorCode8 = static_cast<uint8_t>(-1);
     constexpr uint16_t errCode16 = static_cast<uint16_t>(-1);
 
-    /// @todo: Support cmd decode and if not in enum assign UNDEFINE
+    /// @todo: Support Beacon Message for auto buad
+    constexpr bool autoBuad = false;
+
     enum class CmdMap : uint8_t {
         Get_Version               = 0x000,
         Heartbeat                 = 0x001,
@@ -316,8 +317,6 @@ namespace CanPayload {
         SetVelGainsPayload(float gain, float igain) : vel_gain(gain), vel_integrator_gain(igain) {}
     };
     #pragma pack(pop)
-
-    
 
     // Compile-time check that all CAN payloads are == 8 bytes
     static_assert(sizeof(GetVersionPayload) == 8, "GetVersionPayload too large");

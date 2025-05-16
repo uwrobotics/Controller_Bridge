@@ -1,36 +1,39 @@
 # Introduction
 
-This is an official branch for all the device that need to interact with ODrive or Similar Motor Controller. Our team are currently using ODrive V3.6, ODrive Micro, and ODrive S1.
-
-# Folder Structure
-
-The project is divided into generic code & interface in the /inc and /src folder. Target specific code are linked in the /target folder.
-
-```bash
-.
-├── inc
-├── src
-└── target
-    ├── ros
-    ├── seeedxiao
-    └── stm 
-```
+This is an official library repository for all the device that need to interact with ODrive  micro or S1 or similar Motor Controller. Our team are currently using ODrive V3.6, ODrive Micro, and ODrive S1. Currently the command set support ODrive Micro and S1 using documentation 6.11. [ODrive Docs](https://docs.odriverobotics.com/v/latest/guides/getting-started.html)
 
 # Project Objective
 
 In short term, this project is aimed to support ODrive family. In long term, this project is also aiming to support custom FOC Device manufactured in house.
-- Device Identification
-- Device Command Abstraction over CAN
-- Grouping Device Command
+
+- High-Level CAN Message Agent
+  - Device Identification
+  - Device Command Abstraction over CAN
+  - Grouping Device Command
 - INS/ GNSS Fusion and Logging
 - Device Error Handling
 - Robotics Simulation Abstraction(Gazebo)
 
-Anyone using this library still need to integrate application/ simulation on top of this static library.
+Anyone using this library still need to integrate this library into the application/ simulation on top of this static library.
 
+On my computer the post-compiled library is libodrive.a.
 
+# Folder Structure
 
-# Interface
+The project
+
+```bash
+.
+├── C++.gitignore
+├── CMake.gitignore
+├── CMakeLists.txt
+├── LICENSE
+├── README.md
+├── build
+├── inc
+├── src
+└── test   
+```
 
 ## Movement Command
 
@@ -77,23 +80,23 @@ class Logging {
 }
 ```
 
-
-
-## Set Command
-
-```c++
-//todo
-```
-
-# Testing and Validation
+# Compile Library and UnitTest
 
 ```bash
+mkdir build && cd build
+
+cmake .. && cd ..
+
 # Create build folder based on CMakeLists.txt
 cmake -S . -b build
 
 # Compile the project
 cmake --build build
+```
 
+# Testing and Validation
+
+```bash
 # Execute test
 cd build && ctest && cd ..
 ```
