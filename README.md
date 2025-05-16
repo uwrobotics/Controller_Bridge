@@ -88,9 +88,8 @@ mkdir build && cd build
 cmake .. && cd ..
 
 # Create build folder based on CMakeLists.txt
-cmake -B build -DCMAKE_INSTALL_PREFIX=lib
+cmake -B build -DCMAKE_INSTALL_PREFIX=lib -DBUILD_TESTING=OFF
 
-# Compile the project
 cmake --build build
 
 cmake --install build
@@ -99,6 +98,10 @@ cmake --install build
 # Testing and Validation
 
 ```bash
+cmake -B build -DBUILD_TESTING=ON
+cmake --build build
+ctest --test-dir build
+
 # Execute test
 cd build && ctest && cd ..
 ```

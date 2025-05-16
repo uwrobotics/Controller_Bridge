@@ -1,50 +1,50 @@
 cmake_minimum_required(VERSION 3.14)
 project(MotorControllerLib)
 
-# GoogleTest requires at least C++17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Create the static library
+# === Library Target ===
 add_library(Odrive STATIC
     src/lib.cpp
 )
 
-# Set public header directory
 target_include_directories(Odrive PUBLIC ${CMAKE_SOURCE_DIR}/inc)
 
-# Install compiled static library
+# === Install Targets ===
 install(TARGETS Odrive
         ARCHIVE DESTINATION lib)
 
-# Install header files
 install(DIRECTORY inc/ DESTINATION include)
 
-# Gtest
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
+# === Enable Testing ===
+include(CTest)  # enables BUILD_TESTING option
+if(BUILD_TESTING)
 
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+    # Fetch GoogleTest
+    include(FetchContent)
+    FetchContent_Declare(
+      googletest
+      URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+    )
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
 
-enable_testing()
+    # === Test Executable ===
+    add_executable(utils_test
+        test/test_can_header.cpp
+        test/test_can_msg.cpp
+    )
 
-add_executable(
-  utils_test
-  test/test_can_header.cpp
-  test/test_can_msg.cpp
-)
+    target_include_directories(utils_test PRIVATE ${CMAKE_SOURCE_DIR}/inc)
 
-target_include_directories(utils_test PRIVATE ${CMAKE_SOURCE_DIR}/inc)
+    target_link_libraries(utils_test
+        PRIVATE
+        Odrive         # <-- your library
+        GTest::gtest_main
+    )
 
-target_link_libraries(
-  utils_test
-  GTest::gtest_main
-)
+    include(GoogleTest)
+    gtest_discover_tests(utils_test)
 
-include(GoogleTest)
-gtest_discover_tests(utils_test)
+endif()
