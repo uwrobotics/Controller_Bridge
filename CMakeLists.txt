@@ -19,6 +19,7 @@ enable_testing()
 add_executable(
   utils_test
   test/test_can_header.cpp
+  test/test_can_msg.cpp
 )
 
 target_include_directories(utils_test PRIVATE ${CMAKE_SOURCE_DIR}/inc)
