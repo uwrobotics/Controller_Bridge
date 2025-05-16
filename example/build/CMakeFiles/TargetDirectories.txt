@@ -1,3 +1,0 @@
-/home/linyuchen/code_ws/odrive_bridge/example/build/CMakeFiles/rebuild_cache.dir
-/home/linyuchen/code_ws/odrive_bridge/example/build/CMakeFiles/edit_cache.dir
-/home/linyuchen/code_ws/odrive_bridge/example/build/CMakeFiles/exec.dir
