@@ -88,10 +88,12 @@ mkdir build && cd build
 cmake .. && cd ..
 
 # Create build folder based on CMakeLists.txt
-cmake -S . -b build
+cmake -B build -DCMAKE_INSTALL_PREFIX=lib
 
 # Compile the project
 cmake --build build
+
+cmake --install build
 ```
 
 # Testing and Validation

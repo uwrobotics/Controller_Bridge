@@ -5,13 +5,20 @@ project(MotorControllerLib)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Create a static library target
-add_library(odrive STATIC
+# Create the static library
+add_library(Odrive STATIC
     src/lib.cpp
 )
 
-# Expose public headers to users of the library
-target_include_directories(odrive PUBLIC ${CMAKE_SOURCE_DIR}/inc)
+# Set public header directory
+target_include_directories(Odrive PUBLIC ${CMAKE_SOURCE_DIR}/inc)
+
+# Install compiled static library
+install(TARGETS Odrive
+        ARCHIVE DESTINATION lib)
+
+# Install header files
+install(DIRECTORY inc/ DESTINATION include)
 
 # Gtest
 include(FetchContent)
