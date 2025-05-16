@@ -88,6 +88,7 @@ mkdir build && cd build
 cmake .. && cd ..
 
 # Create build folder based on CMakeLists.txt
+# Install Location to your application
 cmake -B build -DCMAKE_INSTALL_PREFIX=lib -DBUILD_TESTING=OFF
 
 cmake --build build
