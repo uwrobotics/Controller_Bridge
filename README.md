@@ -28,4 +28,74 @@ In short term, this project is aimed to support ODrive family. In long term, thi
 
 Anyone using this library still need to integrate application/ simulation on top of this static library.
 
+
+
+# Interface
+
+## Movement Command
+
+```c++
+enum class MvCmd {
+    Vel,
+    Pos
+};
+
+class MvCmd {
+    MvCmd mode;
+    uint16_t id;
+   	float32 value[2]; //X, Y component for vel or pos
+}
+```
+
+Note: Vel_FF, Torque_FF is preconfigured variable.
+
+## Get Command
+
+```cpp
+class InsOut {
+    float fet_temp;
+    float bus_volt;
+    float bus_curr;
+    float pos_est;
+    float vel_est;
+    float torque_est;
+}
+
+class Logging {
+    float fet_temp;
+    float bus_volt;
+    float bus_curr;
+    float pos_est;
+    float vel_est;
+    float torque_est;
+    float motor_temp;
+    float phase_current_setpoint;
+    float phase_current_measured;
+    float torque_tar;
+    float elec_power;
+    float mech_power;
+}
+```
+
+
+
+## Set Command
+
+```c++
+//todo
+```
+
+# Testing and Validation
+
+```bash
+# Create build folder based on CMakeLists.txt
+cmake -S . -b build
+
+# Compile the project
+cmake --build build
+
+# Execute test
+cd build && ctest && cd ..
+```
+
 # Acknowledgements
