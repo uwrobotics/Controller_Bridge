@@ -38,16 +38,11 @@ jobs:
           cmake --install build_stm
           cd lib_stm && zip -r ../stm_package.zip . && cd ..
 
-      # Create GitHub release
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+      # Upload both release artifacts
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v3
         with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-          files: |
+          name: release-artifacts-${{ github.ref_name }}
+          path: |
             linux_package.zip
             stm_package.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

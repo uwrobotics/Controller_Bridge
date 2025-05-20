@@ -113,4 +113,11 @@ ctest --test-dir build
 cd build && ctest && cd ..
 ```
 
+## Triggering Actions
+
+```bash
+git tag -a v0.0.3 -m "Release v0.0.1" 
+git push --follow-tags origin develop
+```
+
 # Acknowledgements
