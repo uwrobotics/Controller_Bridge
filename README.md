@@ -1,36 +1,39 @@
 # Introduction
 
-This is an official branch for all the device that need to interact with ODrive or Similar Motor Controller. Our team are currently using ODrive V3.6, ODrive Micro, and ODrive S1.
-
-# Folder Structure
-
-The project is divided into generic code & interface in the /inc and /src folder. Target specific code are linked in the /target folder.
-
-```bash
-.
-├── inc
-├── src
-└── target
-    ├── ros
-    ├── seeedxiao
-    └── stm 
-```
+This is an official library repository for all the device that need to interact with ODrive  micro or S1 or similar Motor Controller. Our team are currently using ODrive V3.6, ODrive Micro, and ODrive S1. Currently the command set support ODrive Micro and S1 using documentation 6.11. [ODrive Docs](https://docs.odriverobotics.com/v/latest/guides/getting-started.html)
 
 # Project Objective
 
 In short term, this project is aimed to support ODrive family. In long term, this project is also aiming to support custom FOC Device manufactured in house.
-- Device Identification
-- Device Command Abstraction over CAN
-- Grouping Device Command
+
+- High-Level CAN Message Agent
+  - Device Identification
+  - Device Command Abstraction over CAN
+  - Grouping Device Command
 - INS/ GNSS Fusion and Logging
 - Device Error Handling
 - Robotics Simulation Abstraction(Gazebo)
 
-Anyone using this library still need to integrate application/ simulation on top of this static library.
+Anyone using this library still need to integrate this library into the application/ simulation on top of this static library.
 
+On my computer the post-compiled library is libodrive.a.
 
+# Folder Structure
 
-# Interface
+The project
+
+```bash
+.
+├── C++.gitignore
+├── CMake.gitignore
+├── CMakeLists.txt
+├── LICENSE
+├── README.md
+├── build
+├── inc
+├── src
+└── test   
+```
 
 ## Movement Command
 
@@ -77,25 +80,44 @@ class Logging {
 }
 ```
 
+# Compile Library and UnitTest
 
+```bash
+# Linux Target
+# Option 1:
+mkdir build && cd build
+cmake .. && cd ..
+make
 
-## Set Command
+# Option 2:
+cmake -B build -DCMAKE_INSTALL_PREFIX=lib -DBUILD_TESTING=OFF
+cmake --build build
+cmake --install build
+```
 
-```c++
-//todo
+```cpp
+# STM Target
+cmake -B build_stm -DCMAKE_INSTALL_PREFIX=lib_stm -DBUILD_TESTING=OFF -DTARGET_STM=ON
+cmake --build build_stm
+cmake --install build_stm
 ```
 
 # Testing and Validation
 
 ```bash
-# Create build folder based on CMakeLists.txt
-cmake -S . -b build
-
-# Compile the project
+cmake -B build -DBUILD_TESTING=ON
 cmake --build build
+ctest --test-dir build
 
 # Execute test
 cd build && ctest && cd ..
+```
+
+## Triggering Actions
+
+```bash
+git tag -a v0.0.3 -m "Release v0.0.1" 
+git push --follow-tags origin develop
 ```
 
 # Acknowledgements

@@ -3,13 +3,14 @@
 
 namespace CanHeader {
     constexpr uint8_t broadcastNodeId = 0x3f;
-    constexpr bool autoBuad = false; //support send beacon message
     constexpr uint16_t headerBound = 0x7ff;
     constexpr uint8_t cmdBound = 0x1f;
     constexpr uint8_t errorCode8 = static_cast<uint8_t>(-1);
     constexpr uint16_t errCode16 = static_cast<uint16_t>(-1);
 
-    /// @todo: Support cmd decode and if not in enum assign UNDEFINE
+    /// @todo: Support Beacon Message for auto buad
+    constexpr bool autoBuad = false;
+
     enum class CmdMap : uint8_t {
         Get_Version               = 0x000,
         Heartbeat                 = 0x001,
@@ -86,149 +87,236 @@ namespace CanPayload {
         uint8_t fw_version_minor;
         uint8_t fw_version_revision;
         uint8_t fw_version_unreleased;
+
+        GetVersionPayload() = default;
+        GetVersionPayload(uint8_t proto, uint8_t hw_maj, uint8_t hw_min, uint8_t hw_var,
+                        uint8_t fw_maj, uint8_t fw_min, uint8_t fw_rev, uint8_t fw_unrel)
+            : protocol_version(proto), hw_version_major(hw_maj), hw_version_minor(hw_min),
+            hw_version_variant(hw_var), fw_version_major(fw_maj), fw_version_minor(fw_min),
+            fw_version_revision(fw_rev), fw_version_unreleased(fw_unrel) {}
     };
-    
+
     struct HeartbeatPayload {
-        uint32_t axis_error;
-        uint8_t axis_state;
-        uint8_t procedure_result;
-        uint8_t trajectory_done;
-        uint8_t reserved;
+        uint32_t axis_error{};
+        uint8_t axis_state{};
+        uint8_t procedure_result{};
+        uint8_t trajectory_done{};
+        uint8_t reserved{};
+
+        HeartbeatPayload() = default;
+        HeartbeatPayload(uint32_t err, uint8_t state, uint8_t result, uint8_t done, uint8_t res)
+            : axis_error(err), axis_state(state), procedure_result(result), trajectory_done(done), reserved(res) {}
     };
-    
+
     struct GetErrorPayload {
-        uint32_t active_errors;
-        uint32_t disarm_reason;
+        uint32_t active_errors{};
+        uint32_t disarm_reason{};
+
+        GetErrorPayload() = default;
+        GetErrorPayload(uint32_t errors, uint32_t reason)
+            : active_errors(errors), disarm_reason(reason) {}
     };
-    
+
     struct RxSdoPayload {
-        uint8_t opcode;
-        uint16_t endpoint_id;
-        uint8_t reserved;
-        uint32_t value;
+        uint8_t opcode{};
+        uint16_t endpoint_id{};
+        uint8_t reserved{};
+        uint32_t value{};
+
+        RxSdoPayload() = default;
+        RxSdoPayload(uint8_t op, uint16_t ep, uint8_t res, uint32_t val)
+            : opcode(op), endpoint_id(ep), reserved(res), value(val) {}
     };
-    
+
     struct TxSdoPayload {
-        uint8_t reserved0;
-        uint16_t endpoint_id;
-        uint8_t reserved1;
-        uint32_t value;
+        uint8_t reserved0{};
+        uint16_t endpoint_id{};
+        uint8_t reserved1{};
+        uint32_t value{};
+
+        TxSdoPayload() = default;
+        TxSdoPayload(uint8_t res0, uint16_t ep, uint8_t res1, uint32_t val)
+            : reserved0(res0), endpoint_id(ep), reserved1(res1), value(val) {}
     };
-    
+
     struct AddressPayload {
-        uint8_t node_id;
-        uint32_t serial_number_start;
-        uint16_t serial_number_end;
-        uint8_t connection_id;
+        uint8_t node_id{};
+        uint32_t serial_number_start{};
+        uint16_t serial_number_end{};
+        uint8_t connection_id{};
+
+        AddressPayload() = default;
+        AddressPayload(uint8_t nid, uint32_t sn_start, uint16_t sn_end, uint8_t conn_id)
+            : node_id(nid), serial_number_start(sn_start), serial_number_end(sn_end), connection_id(conn_id) {}
     };
-    
+
     struct EncoderEstimatesPayload {
-        float pos_estimate;
-        float vel_estimate;
+        float pos_estimate{};
+        float vel_estimate{};
+
+        EncoderEstimatesPayload() = default;
+        EncoderEstimatesPayload(float pos, float vel) : pos_estimate(pos), vel_estimate(vel) {}
     };
-    
+
     struct GetIqPayload {
-        float iq_setpoint;
-        float iq_measured;
+        float iq_setpoint{};
+        float iq_measured{};
+
+        GetIqPayload() = default;
+        GetIqPayload(float set, float meas) : iq_setpoint(set), iq_measured(meas) {}
     };
-    
+
     struct GetTemperaturePayload {
-        float fet_temperature;
-        float motor_temperature;
+        float fet_temperature{};
+        float motor_temperature{};
+
+        GetTemperaturePayload() = default;
+        GetTemperaturePayload(float fet, float motor) : fet_temperature(fet), motor_temperature(motor) {}
     };
-    
+
     struct BusVoltageCurrentPayload {
-        float bus_voltage;
-        float bus_current;
+        float bus_voltage{};
+        float bus_current{};
+
+        BusVoltageCurrentPayload() = default;
+        BusVoltageCurrentPayload(float volt, float curr) : bus_voltage(volt), bus_current(curr) {}
     };
-    
+
     struct GetTorquesPayload {
-        float torque_target;
-        float torque_estimate;
+        float torque_target{};
+        float torque_estimate{};
+
+        GetTorquesPayload() = default;
+        GetTorquesPayload(float tgt, float est) : torque_target(tgt), torque_estimate(est) {}
     };
-    
+
     struct GetPowersPayload {
-        float electrical_power;
-        float mechanical_power;
+        float electrical_power{};
+        float mechanical_power{};
+
+        GetPowersPayload() = default;
+        GetPowersPayload(float elec, float mech) : electrical_power(elec), mechanical_power(mech) {}
     };
-    
+
     struct SetAxisStatePayload {
-        uint32_t axis_requested_state;
-        uint32_t reserved;
+        uint32_t axis_requested_state{};
+        uint32_t reserved{};
+
+        SetAxisStatePayload() = default;
+        SetAxisStatePayload(uint32_t req, uint32_t res) : axis_requested_state(req), reserved(res) {}
     };
-    
+
     struct SetControllerModePayload {
-        uint8_t control_mode;
-        uint8_t input_mode;
-        uint16_t reserved0;
-        uint32_t reserved1;
+        uint8_t control_mode{};
+        uint8_t input_mode{};
+        uint16_t reserved0{};
+        uint32_t reserved1{};
+
+        SetControllerModePayload() = default;
+        SetControllerModePayload(uint8_t ctrl, uint8_t input, uint16_t res0, uint32_t res1)
+            : control_mode(ctrl), input_mode(input), reserved0(res0), reserved1(res1) {}
     };
-    
+
     struct SetInputPosPayload {
-        float input_pos;
-        int16_t vel_ff;
-        int16_t torque_ff;
+        float input_pos{};
+        int16_t vel_ff{};
+        int16_t torque_ff{};
+
+        SetInputPosPayload() = default;
+        SetInputPosPayload(float pos, int16_t vff, int16_t tff) : input_pos(pos), vel_ff(vff), torque_ff(tff) {}
     };
-    
+
     struct SetInputVelPayload {
-        float input_vel;
-        float input_torque_ff;
+        float input_vel{};
+        float input_torque_ff{};
+
+        SetInputVelPayload() = default;
+        SetInputVelPayload(float vel, float torque_ff) : input_vel(vel), input_torque_ff(torque_ff) {}
     };
-    
+
     struct SetInputTorquePayload {
-        float input_torque;
-        uint32_t reserved;
+        float input_torque{};
+        uint32_t reserved{};
+
+        SetInputTorquePayload() = default;
+        SetInputTorquePayload(float torque, uint32_t res) : input_torque(torque), reserved(res) {}
     };
-    
+
     struct SetLimitsPayload {
-        float velocity_limit;
-        float current_limit;
+        float velocity_limit{};
+        float current_limit{};
+
+        SetLimitsPayload() = default;
+        SetLimitsPayload(float vel, float curr) : velocity_limit(vel), current_limit(curr) {}
     };
-    
+
     struct SetTrajVelLimitPayload {
-        float traj_vel_limit;
-        uint32_t reserved;
+        float traj_vel_limit{};
+        uint32_t reserved{};
+
+        SetTrajVelLimitPayload() = default;
+        SetTrajVelLimitPayload(float vel, uint32_t res) : traj_vel_limit(vel), reserved(res) {}
     };
-    
+
     struct SetTrajAccelLimitsPayload {
-        float traj_accel_limit;
-        float traj_decel_limit;
+        float traj_accel_limit{};
+        float traj_decel_limit{};
+
+        SetTrajAccelLimitsPayload() = default;
+        SetTrajAccelLimitsPayload(float accel, float decel) : traj_accel_limit(accel), traj_decel_limit(decel) {}
     };
-    
+
     struct SetTrajInertiaPayload {
-        float traj_inertia;
-        uint32_t reserved;
+        float traj_inertia{};
+        uint32_t reserved{};
+
+        SetTrajInertiaPayload() = default;
+        SetTrajInertiaPayload(float inertia, uint32_t res) : traj_inertia(inertia), reserved(res) {}
     };
-    
+
     struct RebootPayload {
-        uint8_t action;
-        uint8_t reserved1;
-        uint16_t reserved2;
-        uint32_t reserved3;
+        uint8_t action{};
+        uint8_t reserved1{};
+        uint16_t reserved2{};
+        uint32_t reserved3{};
+
+        RebootPayload() = default;
+        RebootPayload(uint8_t act, uint8_t r1, uint16_t r2, uint32_t r3)
+            : action(act), reserved1(r1), reserved2(r2), reserved3(r3) {}
     };
-    
+
     struct ClearErrorsPayload {
-        uint32_t identify;
-        uint32_t reserved;
+        uint32_t identify{};
+        uint32_t reserved{};
+
+        ClearErrorsPayload() = default;
+        ClearErrorsPayload(uint32_t id, uint32_t res) : identify(id), reserved(res) {}
     };
-    
+
     struct SetAbsolutePositionPayload {
-        float position;
-        uint32_t reserved;
+        float position{};
+        uint32_t reserved{};
+
+        SetAbsolutePositionPayload() = default;
+        SetAbsolutePositionPayload(float pos, uint32_t res) : position(pos), reserved(res) {}
     };
-    
+
     struct SetPosGainPayload {
-        float pos_gain;
-        uint32_t reserved;
+        float pos_gain{};
+        uint32_t reserved{};
+
+        SetPosGainPayload() = default;
+        SetPosGainPayload(float gain, uint32_t res) : pos_gain(gain), reserved(res) {}
     };
-    
+
     struct SetVelGainsPayload {
-        float vel_gain;
-        float vel_integrator_gain;
+        float vel_gain{};
+        float vel_integrator_gain{};
+
+        SetVelGainsPayload() = default;
+        SetVelGainsPayload(float gain, float igain) : vel_gain(gain), vel_integrator_gain(igain) {}
     };
     #pragma pack(pop)
-
-    
 
     // Compile-time check that all CAN payloads are == 8 bytes
     static_assert(sizeof(GetVersionPayload) == 8, "GetVersionPayload too large");
