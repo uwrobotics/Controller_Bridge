@@ -83,17 +83,23 @@ class Logging {
 # Compile Library and UnitTest
 
 ```bash
+# Linux Target
+# Option 1:
 mkdir build && cd build
-
 cmake .. && cd ..
+make
 
-# Create build folder based on CMakeLists.txt
-# Install Location to your application
+# Option 2:
 cmake -B build -DCMAKE_INSTALL_PREFIX=lib -DBUILD_TESTING=OFF
-
 cmake --build build
-
 cmake --install build
+```
+
+```cpp
+# STM Target
+cmake -B build_stm -DCMAKE_INSTALL_PREFIX=lib_stm -DBUILD_TESTING=OFF -DTARGET_STM=ON
+cmake --build build_stm
+cmake --install build_stm
 ```
 
 # Testing and Validation
