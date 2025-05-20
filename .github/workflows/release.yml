@@ -1,9 +1,11 @@
 name: Publish Multi-Target Release
 
 on:
+  pull_request_target:
+    types: [labeled]
   push:
     tags:
-      - validate
+      - 'v*'
     branches:
       - main
       - release
