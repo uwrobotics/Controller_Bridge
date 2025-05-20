@@ -19,18 +19,4 @@ jobs:
         cmake --build build
         ctest --test-dir build
         cd build && ctest && cd ..
-
-    - name: Package artifacts
-      run: |
-          cd build
-          tar -czvf odrive-lib.tar.gz libOdrive.a
-    
-    # Upload release artifact to GitHub Releases
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: build/odrive-lib.tar.gz
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
         
