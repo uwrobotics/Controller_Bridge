@@ -3,7 +3,11 @@ name: Publish Multi-Target Release
 on:
   push:
     tags:
-      - 'v*'  # Trigger on version tags like v1.0.0
+      - validate
+    branches:
+      - main
+      - release
+    
 
 jobs:
   release:
