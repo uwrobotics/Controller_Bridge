@@ -1,0 +1,47 @@
+name: Publish Multi-Target Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v1.0.0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install ARM Toolchain for STM
+        run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi
+
+      # Build Linux version
+      - name: Build Linux target
+        run: |
+          cmake -B build_linux -DCMAKE_INSTALL_PREFIX=lib_linux -DBUILD_TESTING=OFF
+          cmake --build build_linux
+          cmake --install build_linux
+          cd lib_linux && zip -r ../linux_package.zip . && cd ..
+
+      # Build STM32 version
+      - name: Build STM32 target
+        run: |
+          cmake -B build_stm -DCMAKE_INSTALL_PREFIX=lib_stm -DBUILD_TESTING=OFF -DTARGET_STM=ON
+          cmake --build build_stm
+          cmake --install build_stm
+          cd lib_stm && zip -r ../stm_package.zip . && cd ..
+
+      # Create GitHub release
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          files: |
+            linux_package.zip
+            stm_package.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

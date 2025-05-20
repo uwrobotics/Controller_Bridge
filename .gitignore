@@ -32,6 +32,6 @@
 *.app
 
 # Build Archive
-build/
-lib/
+build*/
+lib*/
 .vscode/

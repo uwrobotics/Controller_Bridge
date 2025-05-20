@@ -13,11 +13,24 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Cmake Configure
-      run: cmake -B build -DBUILD_TESTING=ON
-    - name: Cmake Build
-      run: cmake --build build
-    - name: Build Ctest
-      run: ctest --test-dir build
-    - name: Execute Test
-      run: cd build && ctest && cd ..
+    - name: Cmake
+      run: | 
+        cmake -B build -DBUILD_TESTING=ON
+        cmake --build build
+        ctest --test-dir build
+        cd build && ctest && cd ..
+
+    - name: Package artifacts
+      run: |
+          cd build
+          tar -czvf odrive-lib.tar.gz libOdrive.a
+    
+    # Upload release artifact to GitHub Releases
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/odrive-lib.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        
